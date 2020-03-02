@@ -23,26 +23,47 @@ const filter = { password: 0, __v: 0 } // 指定过滤的属性
 router.post('/register', async (ctx) => {
   console.log('请求参数', ctx.request.body)
   const { username, password, type } = ctx.request.body
-  await UserModel.findOne({ username }, (err, user) => {
-    console.log('查找错误', err)
-    if (user) {
-      ctx.body = {
-        code: 1,
-        msg: '此用户已存在'
+  // await UserModel.findOne({ username }, (err, user) => {
+  //   console.log('查找错误', err)
+  //   if (user) {
+  //     ctx.body = {
+  //       code: 1,
+  //       msg: '此用户已存在'
+  //     }
+  //     return
+  //   } else {
+  const userInfo = new UserModel({ username, type, password: md5(password) })
+  // await userInfo.save((err, user) => {
+  //   console.log('插入用户信息', err, user)
+  //   console.log('2')
+  //   const data = { username, type, _id: user._id }
+  //   // ctx.cookies.set('userid', user._id, { maxAge: 1000 * 60 * 60 * 24 })
+  //   ctx.body = { code: 0, data }
+  //   return
+  // })
+  let _user
+  const res = await userInfo.save()
+  console.log('1', _user, res)
+  if (res) {
+    console.log('0', res)
+    ctx.cookies.set('userid', res._id, { maxAge: 1000 * 60 * 60 * 24 })
+    ctx.body = {
+      code: 0,
+      data: {
+        username,
+        type,
+        _id: res._id
       }
-      return
-    } else {
-      let userInfo = new UserModel({ username, type, password: md5(password) })
-      userInfo.save((err, user) => {
-        console.log('插入用户信息', err, user)
-        console.log('2')
-        const data = { username, type, _id: user._id }
-        ctx.cookies.set('userid', user._id, { maxAge: 1000 * 60 * 60 * 24 })
-        ctx.body = { code: 0, data }
-        return
-      })
     }
-  })
+  } else {
+    console.log(1)
+    ctx.body = {
+      code: 1,
+      msg: '注册失败'
+    }
+  }
+  // }
+  // })
 })
 
 router.post('/login', async (ctx) => {

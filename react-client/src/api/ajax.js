@@ -3,6 +3,7 @@
 函数的返回值是promise对象
  */
 import axios from 'axios'
+import qs from 'qs'
 const baseUrl = ''
 // const baseUrl = 'http://localhost:4000'
 export default function ajax (url, data = {}, type = 'GET') {
@@ -22,6 +23,6 @@ export default function ajax (url, data = {}, type = 'GET') {
     return axios.get(url + '?' + paramStr)
   } else {// 发送POST请求
     // 使用axios发post请求
-    return axios.post(url, data)
+    return axios.post(url, qs.stringify(data))
   }
 }

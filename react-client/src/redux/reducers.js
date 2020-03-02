@@ -3,18 +3,21 @@
 */
 
 import { combineReducers } from 'redux'
-import { AUTH_SUCCESS } from './action-types'
+import { AUTH_SUCCESS, ERROR_MSG } from './action-types'
 
 const initUser = {
   username: '',
   type: '',
-  msg: ''
+  msg: '',
+  redirectTo: ''
 }
 
 function user (state = initUser, action) {
   switch (action.type) {
     case AUTH_SUCCESS:
-      break
+      return { ...action.data, redirectTo: '/' }
+    case ERROR_MSG:
+      return { ...state, msg: action.data }
     default:
       return state
   }

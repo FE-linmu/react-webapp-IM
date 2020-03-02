@@ -22,9 +22,10 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.0",
     "mongoose": "^5.9.2",
+    "ms": "^2.1.2",
     "nodemon": "^1.19.4"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.4"
   }
 }

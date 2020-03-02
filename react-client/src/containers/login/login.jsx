@@ -7,12 +7,16 @@ import {
   List,
   InputItem,
   WhiteSpace,
-  Button
+  Button,
+  Toast
 } from 'antd-mobile'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+import { login } from '../../redux/actions'
 
 import Logo from '../../components/logo/logo'
 
-export default class Login extends Component {
+class Login extends Component {
   state = {
     username: '',
     password: ''
@@ -22,6 +26,7 @@ export default class Login extends Component {
     this.setState({
       [name]: value
     })
+    this.props.user.msg = ''
   }
 
   toRegister = () => {
@@ -29,16 +34,23 @@ export default class Login extends Component {
   }
 
   login = () => {
-    console.log(this.state)
+    // console.log(this.state)
+    this.props.login(this.state)
   }
 
   render () {
+    const { type } = this.state
+    const { msg, redirectTo } = this.props.user
+    if (redirectTo) {
+      return <Redirect to={redirectTo}></Redirect>
+    }
     return (
       <div>
         <NavBar>Boss直聘</NavBar>
         <Logo />
         <WingBlank>
           <List>
+            {msg ? Toast.info(msg) : null}
             <InputItem
               placeholder="请输入用户名"
               onChange={val => this.handleChange('username', val)}
@@ -63,3 +75,8 @@ export default class Login extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({ user: state.user }),
+  { login }
+)(Login)

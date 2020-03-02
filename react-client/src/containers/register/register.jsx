@@ -8,29 +8,35 @@ import {
   InputItem,
   Radio,
   Button,
-  WhiteSpace
+  WhiteSpace,
+  Toast
 } from 'antd-mobile'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+import { register } from '../../redux/actions'
 
 import Logo from '../../components/logo/logo'
 
 const ListItem = List.Item
 
-export default class Register extends Component {
+class Register extends Component {
   state = {
     username: '',
     password: '',
     password2: '',
-    type: '求职者'
+    type: ''
   }
 
   handleChange = (name, value) => {
     this.setState({
       [name]: value
     })
+    this.props.user.msg = ''
   }
 
   register = () => {
-    console.log(JSON.stringify(this.state))
+    // console.log(JSON.stringify(this.state))
+    this.props.register(this.state)
   }
 
   toLogin = () => {
@@ -39,12 +45,18 @@ export default class Register extends Component {
 
   render () {
     const { type } = this.state
+    const { msg, redirectTo } = this.props.user
+    if (redirectTo) {
+      return <Redirect to={redirectTo}></Redirect>
+    }
     return (
       <div>
         <NavBar>Boss&nbsp;直&nbsp;聘</NavBar>
         <Logo />
         <WingBlank>
           <List>
+            {msg ? Toast.info(msg) : null}
+            <WhiteSpace />
             <InputItem
               placeholder="请输入用户名"
               onChange={val => this.handleChange('username', val)}
@@ -84,3 +96,8 @@ export default class Register extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({ user: state.user }),
+  { register }
+)(Register)
