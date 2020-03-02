@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 
 export default class HeaderSelectors extends Component {
   static propTypes = {
-    // setHeader:PropTypes.func.isRequired
+    setHeader: PropTypes.func.isRequired
   }
   state = {
     icon: null
@@ -25,7 +25,7 @@ export default class HeaderSelectors extends Component {
 
   selectHeader = ({ icon, text }) => {
     this.setState({ icon })
-    // this.props.setHeader(text)
+    this.props.setHeader(text)
   }
 
   render () {

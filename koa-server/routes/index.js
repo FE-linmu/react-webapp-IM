@@ -3,47 +3,11 @@ const md5 = require('blueimp-md5')
 const { UserModel, ChatModel } = require('../db/index')
 const filter = { password: 0, __v: 0 } // 指定过滤的属性
 
-// router.get('/', async (ctx, next) => {
-//   await ctx.render('index', {
-//     title: 'Hello Koa 2!'
-//   })
-// })
-
-// router.get('/string', async (ctx, next) => {
-//   ctx.body = 'koa2 string'
-// })
-
-// router.get('/json', async (ctx, next) => {
-//   ctx.body = {
-//     title: 'koa2 json'
-//   }
-// })
-
-
 router.post('/register', async (ctx) => {
   console.log('请求参数', ctx.request.body)
   const { username, password, type } = ctx.request.body
-  // await UserModel.findOne({ username }, (err, user) => {
-  //   console.log('查找错误', err)
-  //   if (user) {
-  //     ctx.body = {
-  //       code: 1,
-  //       msg: '此用户已存在'
-  //     }
-  //     return
-  //   } else {
   const userInfo = new UserModel({ username, type, password: md5(password) })
-  // await userInfo.save((err, user) => {
-  //   console.log('插入用户信息', err, user)
-  //   console.log('2')
-  //   const data = { username, type, _id: user._id }
-  //   // ctx.cookies.set('userid', user._id, { maxAge: 1000 * 60 * 60 * 24 })
-  //   ctx.body = { code: 0, data }
-  //   return
-  // })
-  let _user
   const res = await userInfo.save()
-  console.log('1', _user, res)
   if (res) {
     console.log('0', res)
     ctx.cookies.set('userid', res._id, { maxAge: 1000 * 60 * 60 * 24 })
@@ -62,8 +26,6 @@ router.post('/register', async (ctx) => {
       msg: '注册失败'
     }
   }
-  // }
-  // })
 })
 
 router.post('/login', async (ctx) => {
@@ -83,6 +45,32 @@ router.post('/login', async (ctx) => {
       }
     }
   })
+})
+
+router.post('/update', async (ctx) => {
+  console.log('保存信息参数', ctx.request)
+  const userid = ctx.cookies.get('userid')
+  if (!userid) {
+    ctx.body = {
+      code: 1,
+      msg: '请先登录'
+    }
+    return
+  }
+  const res = await UserModel.findByIdAndUpdate({ _id: userid }, ctx.request.body)
+  if (res) {
+    const { _id, username, type } = res
+    const data = Object.assign(ctx.request.body, { _id, username, type })
+    ctx.body = {
+      code: 0,
+      data
+    }
+  } else {
+    ctx.body = {
+      code: 2,
+      msg: '用户信息保存失败'
+    }
+  }
 })
 
 module.exports = router
