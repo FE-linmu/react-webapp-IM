@@ -38,7 +38,10 @@ router.post('/login', async (ctx) => {
         msg: '用户名或密码错误'
       }
     } else {
-      ctx.cookies.set('userid', user._id, { maxAge: 1000 * 60 * 60 * 24 * 7 })
+      ctx.cookies.set('userid', user._id, {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: false
+      })
       ctx.body = {
         code: 0,
         data: user
@@ -69,6 +72,29 @@ router.post('/update', async (ctx) => {
     ctx.body = {
       code: 2,
       msg: '用户信息保存失败'
+    }
+  }
+})
+
+router.get('/user', async (ctx) => {
+  const userid = ctx.cookies.get('userid')
+  if (!userid) {
+    ctx.body = {
+      code: 1,
+      msg: '请先登录'
+    }
+    return
+  }
+  const res = await UserModel.findOne({ _id: userid }, filter)
+  if (res) {
+    ctx.body = {
+      code: 0,
+      data: res
+    }
+  } else {
+    ctx.body = {
+      code: 2,
+      msg: '查询用户信息错误'
     }
   }
 })

@@ -19,7 +19,7 @@ class JoberInfo extends Component {
     post: ''
   }
   setHeader = (header) => {
-    this.setState({ header })
+    // this.setState({ header })
   }
   handleChange = (name, val) => {
     this.setState({ [name]: val })
@@ -27,7 +27,7 @@ class JoberInfo extends Component {
   render () {
     const { user } = this.props
     if (user.header) {
-      return <Redirect to='jober' />
+      return <Redirect to='/jober' />
     }
     return (
       <div>

@@ -4,7 +4,7 @@
 
 import { combineReducers } from 'redux'
 import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER } from './action-types'
-import { getRedirectPath } from '../utils'
+import { getRedirectPath } from '../utils/index.js'
 
 const initUser = {
   username: '',

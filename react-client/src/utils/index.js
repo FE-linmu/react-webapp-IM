@@ -1,7 +1,7 @@
 
 export function getRedirectPath (type, header) {
   let path = ''
-  path += type === 'boss' ? '/boss' : '/jober'
+  path += type === 'Boss' ? '/boss' : '/jober'
   if (!header) {
     path += 'info'
   }
